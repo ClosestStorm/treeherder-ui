@@ -4,14 +4,14 @@
 
 'use strict';
 
-treeherder.directive('TestLogLines', ['$timeout', '$parse', function () {
+testLog.directive('TestLogLines', ['$timeout', '$parse', function () {
     function getOffsetOfStep (order) {
         var el = $('.logviewer-step[order="' + order + '"]');
         var parentOffset = el.parent().offset();
 
         return el.offset().top -
                parentOffset.top + el.parent().scrollTop() -
-               parseInt($('.steps-data').first().css('padding-bottom'));
+               parseInt($('.steps-data').first().css('padding-bottom'), 10);
     }
 
     function onScroll ($scope) {

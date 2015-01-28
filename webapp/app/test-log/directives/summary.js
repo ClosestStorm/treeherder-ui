@@ -4,17 +4,7 @@
 
 'use strict';
 
-treeherder.directive('lvLogSteps', ['$timeout', '$q', function ($timeout, $q) {
-    function getOffsetOfStep (order) {
-        var el = $('.logviewer-step[order="' + order + '"]');
-        var parentOffset = el.parent().offset();
-
-        return el.offset().top -
-               parentOffset.top + el.parent().scrollTop() -
-               parseInt($('.steps-data').first().css('padding-bottom'));
-    }
-
-    /* -------------------------------------------------------------------- */
+testLog.directive('lvLogSteps', ['$timeout', '$q', function ($timeout, $q) {
 
     return {
         restrict: 'A',
@@ -46,7 +36,7 @@ treeherder.directive('lvLogSteps', ['$timeout', '$q', function ($timeout, $q) {
                     return step.result && step.result !== "success";
                 })[0];
 
-                if (!firstError) return;
+                if (!firstError) { return; }
 
                 // scroll to the first error
                 $timeout(function () {
@@ -56,15 +46,13 @@ treeherder.directive('lvLogSteps', ['$timeout', '$q', function ($timeout, $q) {
                 });
             };
 
-            scope.displayLog = function(step) {
-                scope.displayedStep = step;
-                scope.currentLineNumber = step.started_linenumber;
+            scope.displayLog = function(line) {
 
                 scope.loadMore({}).then(function () {
                     $timeout(function () {
-                        var raw = $('.lv-log-container')[0];
-                        var line = $('.lv-log-line[line="' + step.started_linenumber + '"]');
-                        raw.scrollTop += line.offset().top - $('.run-data').outerHeight() - 15 ;
+//                        var raw = $('.lv-log-container')[0];
+//                        var line = $('.lv-log-line[line="' + line.serial + '"]');
+//                        raw.scrollTop += line.offset().top - $('.run-data').outerHeight() - 15 ;
                     });
                 });
             };

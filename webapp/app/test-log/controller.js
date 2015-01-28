@@ -82,32 +82,38 @@ testLog.controller('TestLogCtrl', [
                 LogSlice.get_line_range({
                     job_id: $scope.job_id,
                     start_line: range.start,
-                    end_line: range.end
+                    end_line: range.end,
+                    name: "raw"
                 }, {
                     buffer_size: LINE_BUFFER_SIZE
                 }).then(function(data) {
                     var slicedData, length;
 
-                    drawErrorLines(data);
 
                     if (bounds.top) {
                         for (var i = data.length - 1; i >= 0; i--) {
                             // make sure we are inserting at the right place
-                            if ($scope.displayedLogLines[0].index != data[i].index + 1) continue;
+                            if ($scope.displayedLogLines[0].index !== data[i].index + 1) {
+                                continue;
+                            }
                             $scope.displayedLogLines.unshift(data[i]);
                         }
 
                         $timeout(function () {
-                            if (above) removeChunkBelow();
+                            if (above) {
+                                removeChunkBelow();
+                            }
                         }, 100);
                     } else if (bounds.bottom) {
                         var sh = element.scrollHeight;
                         var lines = $scope.displayedLogLines;
 
-                        for (var i = 0; i < data.length; i++) {
+                        for (var j = 0; j < data.length; j++) {
                             // make sure we are inserting at the right place
-                            if (lines[ lines.length - 1 ].index != data[i].index - 1) continue;
-                            $scope.displayedLogLines.push(data[i]);
+                            if (lines[ lines.length - 1 ].index !== data[j].index - 1) {
+                                continue;
+                            }
+                            $scope.displayedLogLines.push(data[j]);
                         }
 
                         $timeout(function () {
@@ -120,6 +126,7 @@ testLog.controller('TestLogCtrl', [
                         $scope.displayedLogLines = data;
                     }
 
+                    console.log("displayedLogLines", $scope.displayedLogLines);
                     $scope.loading = false;
                     deferred.resolve();
                 }, function (error) {
@@ -155,40 +162,14 @@ testLog.controller('TestLogCtrl', [
             $log.log(ThJobArtifactModel.get_uri());
 
             // load the sample structured log summary
-            $http.get('sample-data/structured_summary.log',
+            $http.get('sample-data/plain-chunked_faults.log',
                     {transformResponse: transformStructuredLogToJson})
                     .success(function(data) {
                         $scope.summaryLines = data;
                     }
             );
 
-
-
-
-
-
-/*
-            use the LogSliceView, but we should pass in the log reference as
-            a payload, or indicate which log to look for.  right now that
-            view just takes the 0th log, regardless.  So it should take a name
-            or some other way of finding it so we can get the structured log
-            item.
-
-
-
-
-
-*/
-
-
-
-
-
-
-
-
-
-
+            // load just the metadata in the same way as the old logviewer
             ThJobArtifactModel.get_list({job_id: $scope.job_id, name: 'Structured Log'})
             .then(function(artifactList){
                 if(artifactList.length > 0){
@@ -222,6 +203,9 @@ testLog.controller('TestLogCtrl', [
             });
         };
 
+
+
+
         /** utility functions **/
 
         function transformStructuredLogToJson(data) {
@@ -230,10 +214,10 @@ testLog.controller('TestLogCtrl', [
             return JSON.parse('[' + lines.join(",") + ']');
         }
 
-        function logFileLineCount () {
-            var steps = $scope.artifact.step_data.steps;
-            return steps[ steps.length - 1 ].finished_linenumber;
-        }
+//        function logFileLineCount () {
+//            var steps = $scope.artifact.step_data.steps;
+//            return steps[ steps.length - 1 ].finished_linenumber;
+//        }
 
         function moveLineNumber (bounds) {
             var lines = $scope.displayedLogLines, newLine;
@@ -248,23 +232,24 @@ testLog.controller('TestLogCtrl', [
             return $scope.currentLineNumber;
         }
 
-        function drawErrorLines (data) {
-            if (data.length === 0) return;
-
-            var min = data[0].index;
-            var max = data[ data.length - 1 ].index;
-
-            $scope.artifact.step_data.steps.forEach(function(step) {
-                step.errors.forEach(function(err) {
-                    var line = err.linenumber;
-
-                    if (line < min || line > max) return;
-
-                    var index = line - min;
-                    data[index].hasError = true;
-                });
-            });
-        }
+//        function drawErrorLines (data) {
+//            console.log("drawing the error lines now");
+//            if (data.length === 0) return;
+//
+//            var min = data[0].index;
+//            var max = data[ data.length - 1 ].index;
+//
+//            $scope.artifact.step_data.steps.forEach(function(step) {
+//                step.errors.forEach(function(err) {
+//                    var line = err.linenumber;
+//
+//                    if (line < min || line > max) return;
+//
+//                    var index = line - min;
+//                    data[index].hasError = true;
+//                });
+//            });
+//        }
 
         function getChunksSurrounding(line) {
             var request = {start: null, end: null};
@@ -296,7 +281,7 @@ testLog.controller('TestLogCtrl', [
         }
 
         function getChunkBelow (request) {
-            var lastLine = logFileLineCount();
+            var lastLine = 10000;
 
             request.end += LINE_BUFFER_SIZE;
             request.end = Math.ceil(request.end/LINE_BUFFER_SIZE)*LINE_BUFFER_SIZE;
