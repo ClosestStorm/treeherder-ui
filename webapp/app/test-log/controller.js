@@ -57,6 +57,8 @@ testLog.controller('TestLogCtrl', [
         $scope.loadMore = function(bounds, element) {
             var deferred = $q.defer(), range, req, above, below;
 
+            console.log("loadMore starting");
+
             if (!$scope.loading) {
                 // move the line number either up or down depending which boundary was hit
                 $scope.currentLineNumber = moveLineNumber(bounds);
@@ -83,7 +85,8 @@ testLog.controller('TestLogCtrl', [
                     job_id: $scope.job_id,
                     start_line: range.start,
                     end_line: range.end,
-                    name: "raw"
+                    name: "raw",
+                    format: "json"
                 }, {
                     buffer_size: LINE_BUFFER_SIZE
                 }).then(function(data) {

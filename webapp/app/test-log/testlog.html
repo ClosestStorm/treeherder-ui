@@ -5,7 +5,7 @@
         <title ng-bind="getLogviewerTitle()">Test Log Viewer</title>
         <!-- build:css css/structuredlog.min.css -->
         <link href="../css/bootstrap.css" rel="stylesheet" media="screen">
-        <link href="testlog.css" rel="stylesheet" type="text/css">
+        <link href="./testlog.css" rel="stylesheet" type="text/css">
         <!-- endbuild -->
         <link id="favicon" type="image/png" rel="shortcut icon" href="img/tree_open.png">
     </head>
@@ -37,7 +37,7 @@
         </div>
 
         <div class="lv-log-container"
-             lv-infinite-scroll
+             test-log-infinite-scroll
              test-log-lines="displayedLogLines">
         </div>
 

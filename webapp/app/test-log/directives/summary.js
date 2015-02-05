@@ -47,6 +47,11 @@ testLog.directive('lvLogSteps', ['$timeout', '$q', function ($timeout, $q) {
             };
 
             scope.displayLog = function(line) {
+                console.log(line);
+//
+//  Need to set the actual lines to load here.  Now it's
+// just loading the first X lines.
+// scope.loadMore({top: line.serial}).then(function () {
 
                 scope.loadMore({}).then(function () {
                     $timeout(function () {

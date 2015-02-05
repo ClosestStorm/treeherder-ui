@@ -4,7 +4,7 @@
 
 'use strict';
 
-testLog.directive('TestLogLines', ['$timeout', '$parse', function () {
+testLog.directive('testLogLines', ['$timeout', '$parse', function () {
     function getOffsetOfStep (order) {
         var el = $('.logviewer-step[order="' + order + '"]');
         var parentOffset = el.parent().offset();
@@ -50,6 +50,7 @@ testLog.directive('TestLogLines', ['$timeout', '$parse', function () {
         restrict: 'A',
         templateUrl: 'lines.html',
         link: function (scope, element, attr) {
+            console.log("in the lines");
             $(element).scroll(onScroll.bind(this, scope));
         }
     };

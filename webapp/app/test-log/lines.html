@@ -10,10 +10,10 @@
       ng-if="logError"> Log could not be found </div>
 
 <div ng-repeat="lv_line in displayedLogLines"
-     ng-class="{'text-danger': (lv_line.hasError == true),
+     ng-class="{'text-danger': (lv_line.data.level == 'WARNING' || lv_line.data.level == 'ERROR'),
                 'lv-selected-lines': (displayedStep.order === lv_line.index)}"
      class="lv-log-line"
-     line="{{ ::lv_line.index }}">
+     line="{{ ::lv_line.data.serial }}">
 
-     <span class="lv-line-text">{{ ::lv_line.text }}</span>
+     <span class="lv-line-text">{{ ::lv_line.data.message }}</span>
 </div>
