@@ -36,7 +36,9 @@ testLog.controller('TestLogCtrl', [
         $scope.showSuccessful = true;
 
         $scope.$watch('artifact', function () {
-            if (!$scope.artifact) return;
+            if (!$scope.artifact) {
+                return;
+            }
             $scope.showSuccessful = !$scope.hasFailedSteps();
         });
 
@@ -57,11 +59,9 @@ testLog.controller('TestLogCtrl', [
         $scope.loadMore = function(bounds, element) {
             var deferred = $q.defer(), range, req, above, below;
 
-            console.log("loadMore starting");
-
             if (!$scope.loading) {
                 // move the line number either up or down depending which boundary was hit
-                $scope.currentLineNumber = moveLineNumber(bounds);
+//                $scope.currentLineNumber = moveLineNumber(bounds);
 
                 range = {
                     start: $scope.currentLineNumber,
@@ -77,7 +77,9 @@ testLog.controller('TestLogCtrl', [
                 }
 
                 // dont do the call if we already have all the lines
-                if ( range.start === range.end ) return deferred.promise;
+                if ( range.start === range.end ) {
+                    return deferred.promise;
+                }
 
                 $scope.loading = true;
 
@@ -217,10 +219,10 @@ testLog.controller('TestLogCtrl', [
             return JSON.parse('[' + lines.join(",") + ']');
         }
 
-//        function logFileLineCount () {
-//            var steps = $scope.artifact.step_data.steps;
-//            return steps[ steps.length - 1 ].finished_linenumber;
-//        }
+        function logFileLineCount () {
+            var steps = $scope.artifact.step_data.steps;
+            return steps[ steps.length - 1 ].finished_linenumber;
+        }
 
         function moveLineNumber (bounds) {
             var lines = $scope.displayedLogLines, newLine;
@@ -284,7 +286,7 @@ testLog.controller('TestLogCtrl', [
         }
 
         function getChunkBelow (request) {
-            var lastLine = 10000;
+            var lastLine = 20000;
 
             request.end += LINE_BUFFER_SIZE;
             request.end = Math.ceil(request.end/LINE_BUFFER_SIZE)*LINE_BUFFER_SIZE;
