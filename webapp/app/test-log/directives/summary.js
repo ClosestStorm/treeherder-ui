@@ -47,17 +47,13 @@ testLog.directive('lvLogSteps', ['$timeout', '$q', function ($timeout, $q) {
             };
 
             scope.displayLog = function(line) {
-                console.log(line);
                 scope.currentLineNumber = line.serial;
-//  Need to set the actual lines to load here.  Now it's
-// just loading the first X lines.
-// scope.loadMore({top: line.serial}).then(function () {
 
                 scope.loadMore({}).then(function () {
                     $timeout(function () {
-//                        var raw = $('.lv-log-container')[0];
-//                        var line = $('.lv-log-line[line="' + line.serial + '"]');
-//                        raw.scrollTop += line.offset().top - $('.run-data').outerHeight() - 15 ;
+                        var raw = $('.lv-log-container')[0];
+                        var selectedLine = $('.lv-log-line[line="' + line.serial + '"]');
+                        raw.scrollTop += selectedLine .offset().top - $('.run-data').outerHeight() - 15 ;
                     });
                 });
             };

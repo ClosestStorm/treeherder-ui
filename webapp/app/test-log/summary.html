@@ -6,7 +6,7 @@
          ng-mouseleave="check=false"
          ng-class="{'lv-line-highlight': check}"
          class="text-left pull-left lv-error-line">
-        <span class="text-left">
+        <span class="text-left" ng-if="line.status === 'FAIL'">
             <span class="label label-default lv-line-no line-piece">
                 {{::line.serial}}
             </span>

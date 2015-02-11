@@ -3,6 +3,8 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 body {
+    display: flex;
+    flex-direction: column;
     position: fixed;
     top: 0;
     right: 0;
@@ -42,11 +44,17 @@ body {
     width: 100%;
 }
 
+.fail-line {
+    background-color: #B94141;
+    color: white;
+}
+
 .lv-error-line span:nth-child(2) {
     white-space: normal;
 }
 
 .lv-log-container {
+    flex: auto;
     height: 100%;
     width: 100%;
     overflow: auto;
@@ -54,10 +62,13 @@ body {
     padding: 20px 15px 0;
     white-space: nowrap;
     background: #EFEFEF;
+
 }
 
 .lv-log-line {
     width: 100%;
+    font-family: "Monaco", monospace;
+    font-size: 12px;
 }
 
 .text-danger .lv-line-number {

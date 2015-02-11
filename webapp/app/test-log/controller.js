@@ -61,7 +61,7 @@ testLog.controller('TestLogCtrl', [
 
             if (!$scope.loading) {
                 // move the line number either up or down depending which boundary was hit
-//                $scope.currentLineNumber = moveLineNumber(bounds);
+                $scope.currentLineNumber = moveLineNumber(bounds);
 
                 range = {
                     start: $scope.currentLineNumber,
