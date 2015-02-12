@@ -6,12 +6,14 @@
 
 testLog.directive('testLogInfiniteScroll', ['$timeout', '$parse', function ($timeout, $parse) {
     return function (scope, element, attr) {
-        console.log("hitting infinite scroll start");
+
         element.bind('scroll', function () {
+            // this is hit for every single scroll event to check if we need to load
+            // some more log.  Seems a little inefficient to me, but also seems
+            // responsive enough.
+
             var raw = element[0];
             var sh = raw.scrollHeight;
-
-            console.log("hitting infinite scroll");
 
             if (raw.scrollTop <= 100) {
                 scope.loadMore({top: true}, raw).then(function(haltScrollTop) {

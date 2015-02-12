@@ -1,10 +1,10 @@
 <div class="lv-log-msg"
-     ng-if="!loading && !logError && displayedLogLines.length == 0">
-     Click a <span class="lv-log-msg-step">log step</span> above to view
+     ng-if="!linesLoading && !logError && displayedLogLines.length == 0">
+     Click a <span class="lv-log-msg-step">log line</span> above to view
 </div>
 
 <div class="lv-log-msg lv-log-overlay"
-     ng-if="loading"> Loading... </div>
+     ng-if="linesLoading"> Loading... </div>
 
 <div class="lv-log-msg lv-log-overlay lv-log-error"
       ng-if="logError"> Log could not be found </div>

@@ -29,7 +29,7 @@ testLog.controller('TestLogCtrl', [
         }
 
         $scope.displayedLogLines = [];
-        $scope.loading = false;
+        $scope.linesLoading = false;
         $scope.logError = false;
         $scope.currentLineNumber = 0;
         $scope.highestLine = 0;
@@ -39,27 +39,27 @@ testLog.controller('TestLogCtrl', [
             if (!$scope.artifact) {
                 return;
             }
-            $scope.showSuccessful = !$scope.hasFailedSteps();
+//            $scope.showSuccessful = !$scope.hasWarnings();
         });
 
-        $scope.hasFailedSteps = function () {
-            var steps = $scope.artifact.step_data.steps;
-            for (var i = 0; i < steps.length; i++) {
-                // We only recently generated step results as part of ingestion,
-                // so we have to check the results property is present.
-                // TODO: Remove this when the old data has expired, so long as
-                // other data submitters also provide a step result.
-                if ('result' in steps[i] && steps[i].result !== "success") {
-                    return true;
-                }
-            }
-            return false;
-        };
+//        $scope.hasWarnings = function () {
+//            var steps = $scope.artifact.step_data.steps;
+//            for (var i = 0; i < steps.length; i++) {
+//                // We only recently generated step results as part of ingestion,
+//                // so we have to check the results property is present.
+//                // TODO: Remove this when the old data has expired, so long as
+//                // other data submitters also provide a step result.
+//                if ('result' in steps[i] && steps[i].result !== "success") {
+//                    return true;
+//                }
+//            }
+//            return false;
+//        };
 
         $scope.loadMore = function(bounds, element) {
             var deferred = $q.defer(), range, req, above, below;
 
-            if (!$scope.loading) {
+            if (!$scope.linesLoading) {
                 // move the line number either up or down depending which boundary was hit
                 $scope.currentLineNumber = moveLineNumber(bounds);
 
@@ -81,7 +81,7 @@ testLog.controller('TestLogCtrl', [
                     return deferred.promise;
                 }
 
-                $scope.loading = true;
+                $scope.linesLoading = true;
 
                 LogSlice.get_line_range({
                     job_id: $scope.job_id,
@@ -132,10 +132,10 @@ testLog.controller('TestLogCtrl', [
                     }
 
                     console.log("displayedLogLines", $scope.displayedLogLines);
-                    $scope.loading = false;
+                    $scope.linesLoading = false;
                     deferred.resolve();
                 }, function (error) {
-                    $scope.loading = false;
+                    $scope.linesLoading = false;
                     $scope.logError = true;
                     deferred.reject();
                 });
@@ -144,23 +144,6 @@ testLog.controller('TestLogCtrl', [
             }
 
             return deferred.promise;
-        };
-
-        // @@@ it may be possible to do this with the angular date filter?
-        $scope.formatTime = function(sec) {
-            var h = Math.floor(sec/3600);
-            var m = Math.floor(sec%3600/60);
-            var s = Math.floor(sec%3600 % 60);
-            var secStng = sec.toString();
-            var ms = secStng.substr(secStng.indexOf(".")+1, 2);
-            return ((h > 0 ? h + "h " : "") + (m > 0 ? m + "m " : "") +
-                   (s > 0 ? s + "s " : "") + (ms > 0 ? ms + "ms " : "00ms"));
-        };
-
-        $scope.displayTime = function(started, finished) {
-            var start = started.substr(started.indexOf(" ")+1, 8);
-            var end = finished.substr(finished.indexOf(" ")+1, 8);
-            return start + "-" + end;
         };
 
         $scope.init = function() {
@@ -228,7 +211,13 @@ testLog.controller('TestLogCtrl', [
             var lines = $scope.displayedLogLines, newLine;
 
             if (bounds.top) {
-                return lines[0].index;
+                console.log("bounds top lines", bounds, lines.length);
+                if (lines.length) {
+                    var thisone = lines[0];
+                    return thisone.index;
+                } else {
+                    console.log("we didn't have any lines");
+                }
             } else if (bounds.bottom) {
                 newLine = lines[lines.length - 1].index + 1;
                 return (newLine > logFileLineCount()) ? logFileLineCount(): newLine;
@@ -236,25 +225,6 @@ testLog.controller('TestLogCtrl', [
 
             return $scope.currentLineNumber;
         }
-
-//        function drawErrorLines (data) {
-//            console.log("drawing the error lines now");
-//            if (data.length === 0) return;
-//
-//            var min = data[0].index;
-//            var max = data[ data.length - 1 ].index;
-//
-//            $scope.artifact.step_data.steps.forEach(function(step) {
-//                step.errors.forEach(function(err) {
-//                    var line = err.linenumber;
-//
-//                    if (line < min || line > max) return;
-//
-//                    var index = line - min;
-//                    data[index].hasError = true;
-//                });
-//            });
-//        }
 
         function getChunksSurrounding(line) {
             var request = {start: null, end: null};
